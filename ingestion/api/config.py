@@ -8,7 +8,7 @@ DATASET = "prix-des-carburants-en-france-flux-instantane-v2"
 
 DB_URI = os.getenv(
     "DB_URI",
-    "postgresql://user:password@localhost:5432/fuel_db"
+    "postgresql://postgres:Espoir@01@localhost:5432/prix_carburant"
 )
 
 BATCH_SIZE = 10000
