@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_fuel_prices
+    description: "Donnees nettoyees et dedoublonnees — couche Silver"
+    columns:
+      - name: station_id
+        description: "Identifiant unique de la station"
+        tests:
+          - not_null
+      - name: carburant
+        description: "Type de carburant normalise en minuscules"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Gazole', 'SP95', 'SP98', 'E10', 'E85', 'GPLc']
+      - name: prix
+        description: "Prix en euros par litre"
+      - name: prix_maj
+        tests:
+          - not_null:
+              severity: warn
+      - name: region
+        tests:
+          - not_null:
+              severity: warn

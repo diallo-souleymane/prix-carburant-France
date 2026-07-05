@@ -1,0 +1,75 @@
+version: 2
+
+models:
+
+  - name: gold_avg_by_region
+    description: Prix moyen par region et carburant (carte choroplethe Power BI).
+    columns:
+      - name: region
+        tests: [not_null]
+      - name: carburant
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Gazole', 'SP95', 'SP98', 'E10', 'E85', 'GPLc']
+      - name: prix_moyen
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0.3
+              max_value: 5.0
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [region, carburant]
+
+  - name: gold_avg_by_fuel
+    description: Prix moyen national par carburant (KPI Power BI).
+    columns:
+      - name: carburant
+        tests:
+          - not_null
+          - unique
+      - name: prix_moyen_national
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0.3
+              max_value: 5.0
+
+  - name: gold_price_trend
+    description: Evolution temporelle du prix moyen national par carburant.
+    columns:
+      - name: jour
+        tests: [not_null]
+      - name: carburant
+        tests: [not_null]
+      - name: prix_moyen
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [jour, carburant]
+
+  - name: gold_stations
+    description: >
+      Une ligne = une station x un carburant, avec coordonnees GPS, prix
+      et statut. Table consommee par la carte Power BI.
+    columns:
+      - name: station_id
+        tests: [not_null]
+      - name: carburant
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Gazole', 'SP95', 'SP98', 'E10', 'E85', 'GPLc']
+      - name: est_disponible
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: latitude
+        tests: [not_null]
+      - name: longitude
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [station_id, carburant]

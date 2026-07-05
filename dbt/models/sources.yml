@@ -1,0 +1,6 @@
+version: 2
+sources:
+  - name: bronze
+    database: bronze
+    tables:
+      - name: fuel_prices_raw
