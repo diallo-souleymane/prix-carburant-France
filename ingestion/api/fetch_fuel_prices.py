@@ -1,6 +1,6 @@
 """
 Ingestion des prix du carburant (API open data data.economie.gouv.fr)
-vers la couche Bronze (MySQL).
+vers la couche Bronze (PostgreSQL).
 
 - Pagination complete de l'API (limit 100 par page)
 - Aplatissement des champs utiles : prix, statut et coordonnees GPS par station
@@ -25,7 +25,7 @@ import time
 # ----------------------------------------------------------------------
 load_dotenv()
 
-DB_URI = os.getenv("DB_URI")  # mysql+pymysql://user:pwd@127.0.0.1:3306/bronze
+DB_URI = os.getenv("DB_URI")  # postgresql+psycopg2://user:pwd@127.0.0.1:5432/prix_carburant_france
 if not DB_URI:
     sys.exit("Variable DB_URI manquante dans le fichier .env")
 
@@ -158,11 +158,12 @@ def flatten(record):
 # Chargement
 # ----------------------------------------------------------------------
 def load_to_bronze(df):
-    """Ecrit le DataFrame dans MySQL (append)."""
+    """Ecrit le DataFrame dans PostgreSQL (append)."""
     engine = create_engine(DB_URI)
     df.to_sql(
         TABLE_NAME,
         con=engine,
+        schema="bronze",
         if_exists="append",   # append-only : on conserve l'historique
         index=False,
         chunksize=500,
@@ -175,7 +176,7 @@ def load_to_bronze(df):
 # Pipeline
 # ----------------------------------------------------------------------
 def main():
-    log.info("=== Demarrage ingestion prix carburant -> Bronze (MySQL) ===")
+    log.info("=== Demarrage ingestion prix carburant -> Bronze (PostgreSQL) ===")
 
     records = fetch_all_records()
     if not records:
