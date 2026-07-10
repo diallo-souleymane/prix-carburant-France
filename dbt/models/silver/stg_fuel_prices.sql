@@ -98,7 +98,7 @@ final as (
         d.station_id,
         d.carburant,
         d.prix,
-        cast(d.prix_maj as datetime) as prix_maj,
+        cast(d.prix_maj as timestamp) as prix_maj,
         d.statut,
         -- on enrichit chaque ligne avec les attributs de la station
         s.adresse,
