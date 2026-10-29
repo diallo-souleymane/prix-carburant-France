@@ -98,3 +98,4 @@ dbt --profiles-dir . test
 ## Frequence
 
 Pipeline batch execute toutes les 24h.
+
